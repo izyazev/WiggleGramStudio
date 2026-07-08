@@ -1,0 +1,25 @@
+[package]
+name = "wigglegram-studio"
+version = "0.1.0"
+description = "Local Nishika wigglegram editor"
+authors = ["WiggleGram Studio"]
+edition = "2021"
+
+[lib]
+name = "wigglegram_studio_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-shell = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp", "tiff"] }
+kamadak-exif = "0.6"
+base64 = "0.22"
+tempfile = "3"
+
