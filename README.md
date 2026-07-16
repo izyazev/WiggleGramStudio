@@ -111,7 +111,7 @@ Keep the application version synchronized before creating a tag:
 npm run version:set -- 0.2.0
 ```
 
-Commit the version change, then create and push tag `0.2.0` or `v0.2.0`. The Windows GitHub Actions workflow runs the tests, builds an NSIS installer, and attaches it to the matching GitHub Release. A manually started workflow also produces a downloadable Windows artifact without creating a Release.
+Commit the version change, then create and push tag `0.2.0` or `v0.2.0`. The Windows and macOS GitHub Actions workflows run the tests, build the x64 NSIS installer and Apple Silicon DMG, and attach both files to the matching GitHub Release. Manually started workflows produce downloadable build artifacts without creating a Release.
 
 ## FFmpeg Distribution
 

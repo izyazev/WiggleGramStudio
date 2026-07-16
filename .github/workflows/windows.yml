@@ -69,6 +69,10 @@ jobs:
           gh release view $tag *> $null
           if ($LASTEXITCODE -ne 0) {
             gh release create $tag --title "WiggleGram Studio v$($tag -replace '^v', '')" --generate-notes
+            if ($LASTEXITCODE -ne 0) {
+              gh release view $tag *> $null
+              if ($LASTEXITCODE -ne 0) { throw "Could not create or find release $tag" }
+            }
           }
           Get-ChildItem "src-tauri/target/release/bundle/nsis/*.exe" | ForEach-Object {
             gh release upload $tag $_.FullName --clobber

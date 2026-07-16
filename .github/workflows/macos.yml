@@ -1,0 +1,72 @@
+name: macOS build
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+      - "[0-9]*"
+
+permissions:
+  contents: write
+
+jobs:
+  macos:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install JavaScript dependencies
+        run: npm ci
+
+      - name: Prepare standalone FFmpeg sidecar
+        run: npm run ffmpeg:download:macos
+
+      - name: Run tests
+        run: npm test
+
+      - name: Verify tagged version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          package_version=$(node -p "require('./package.json').version")
+          tauri_version=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          cargo_version=$(awk -F'"' '/^\[package\]/{in_package=1; next} in_package && /^version = /{print $2; exit}' src-tauri/Cargo.toml)
+          tag_version="${GITHUB_REF_NAME#v}"
+          if [[ "$package_version" != "$tauri_version" || "$package_version" != "$cargo_version" || "$package_version" != "$tag_version" ]]; then
+            echo "Version mismatch: package=$package_version, tauri=$tauri_version, cargo=$cargo_version, tag=$tag_version" >&2
+            exit 1
+          fi
+
+      - name: Build Apple Silicon DMG
+        env:
+          APPLE_SIGNING_IDENTITY: "-"
+        run: npm run tauri build
+
+      - name: Save macOS DMG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WiggleGram-Studio-macOS-Apple-Silicon
+          path: src-tauri/target/release/bundle/dmg/*.dmg
+          if-no-files-found: error
+
+      - name: Attach DMG to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="$GITHUB_REF_NAME"
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" --title "WiggleGram Studio v${tag#v}" --generate-notes || gh release view "$tag" >/dev/null
+          fi
+          for file in src-tauri/target/release/bundle/dmg/*.dmg; do
+            gh release upload "$tag" "$file" --clobber
+          done
