@@ -1,8 +1,8 @@
 <div align="center">
   <img src="src/assets/wigglegram-logo.png" width="96" alt="WiggleGram Studio logo">
   <h1>WiggleGram Studio</h1>
-  <p><strong>Turn 2–4 Nishika frames into smooth, shareable wigglegrams — entirely on your computer.</strong></p>
-  <p>Align, crop, preview, and export MP4, GIF, or print-ready image sequences without uploading your photos anywhere.</p>
+  <p><strong>Turn 2–4 frames from Nishika N8000, Nimslo 3D, Reto3D, or ImageTech 3Dfx into smooth, shareable wigglegrams.</strong></p>
+  <p>A free desktop photo editor for aligning, cropping, previewing, and exporting MP4, GIF, or print-ready image sequences — entirely on your computer.</p>
 
   <p>
     <a href="https://github.com/izyazev/WiggleGramStudio/releases/latest"><img src="https://img.shields.io/github/v/release/izyazev/WiggleGramStudio?display_name=tag&sort=semver&style=for-the-badge&color=34d1e4" alt="Latest release"></a>
