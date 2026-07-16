@@ -1,126 +1,139 @@
-# WiggleGram Studio
+<div align="center">
+  <img src="src/assets/wigglegram-logo.png" width="96" alt="WiggleGram Studio logo">
+  <h1>WiggleGram Studio</h1>
+  <p><strong>Turn 2–4 Nishika frames into smooth, shareable wigglegrams — entirely on your computer.</strong></p>
+  <p>Align, crop, preview, and export MP4, GIF, or print-ready image sequences without uploading your photos anywhere.</p>
 
-WiggleGram Studio is a desktop app for making wigglegram animations from 2-4 Nishika N8000 photos. Processing is local: source photos are not changed and are not uploaded anywhere.
+  <p>
+    <a href="https://github.com/izyazev/WiggleGramStudio/releases/latest"><img src="https://img.shields.io/github/v/release/izyazev/WiggleGramStudio?display_name=tag&sort=semver&style=for-the-badge&color=34d1e4" alt="Latest release"></a>
+    <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-34d1e4?style=for-the-badge&logo=windows" alt="Windows 10 and 11">
+    <img src="https://img.shields.io/badge/macOS-Apple%20Silicon-ff5b63?style=for-the-badge&logo=apple" alt="macOS Apple Silicon">
+    <a href="LICENSE"><img src="https://img.shields.io/github/license/izyazev/WiggleGramStudio?style=for-the-badge&color=8b96a0" alt="GPL-3.0 license"></a>
+  </p>
 
-Repository: https://github.com/izyazev/WiggleGramStudio
+  <p><a href="https://github.com/izyazev/WiggleGramStudio/releases/latest"><strong>Download the latest release →</strong></a></p>
+</div>
 
-## Features
+<br>
 
-- Import 2-4 photos with a file dialog or drag-and-drop.
-- Reorder frames by dragging thumbnails.
-- Set an anchor point on every frame with zoom controls.
-- Align frames by X/Y offset without stretching or perspective distortion.
-- Crop manually, auto-crop to the common visible area, or use 4:3, 3:4, 16:9, and 9:16 presets.
-- Preview ping-pong or loop animation with adjustable frame speed.
-- Optional Smooth intermediate frames through FFmpeg optical flow.
-- Export MP4/H.264, GIF, or aligned image sets in PNG, JPG, and TIFF.
-- Export image sets for printing and lenticular workflows.
-- Russian and English UI with system-language detection.
-- Check the latest GitHub Release on startup and show an update link in the footer when a newer version is available.
+![WiggleGram Studio interface](docs/images/app-overview.jpg)
 
-## Install From Release
+> **Private by design.** WiggleGram Studio processes everything locally. Your source photos are never modified and never leave your computer.
 
-1. Open the [Releases](https://github.com/izyazev/WiggleGramStudio/releases) page.
-2. Download the file for your operating system:
-   - Windows 10/11 x64: the latest `*-setup.exe` installer.
-   - Apple Silicon macOS: the latest `*_aarch64.dmg` image.
-3. Run the installer, then launch WiggleGram Studio.
+## From frames to wigglegram
 
-Release installers bundle FFmpeg. End users do not need Homebrew, a system FFmpeg installation, or any other runtime dependency.
+| 1. Import | 2. Align | 3. Crop & preview | 4. Export |
+|:--|:--|:--|:--|
+| Drop in 2–4 photos from a Nishika N8000 or a similar multi-lens camera. | Mark the same visible point on every frame for precise X/Y alignment. | Choose the shared visible area, set an aspect ratio, and tune the motion. | Save as MP4, GIF, PNG, JPG, TIFF, or an aligned image sequence. |
 
-If macOS says the app cannot be opened because it is from an unidentified developer, open it with right click -> Open. This can happen until the app is signed and notarized with an Apple Developer account.
+## Made for the full wigglegram workflow
 
-Unsigned Windows installers can show a Microsoft Defender SmartScreen warning. Signing the installer with a trusted code-signing certificate removes that warning for future releases.
+| | |
+|:--|:--|
+| **Fast frame alignment**<br>Place one anchor point per image. Frames are shifted without stretching or perspective distortion. | **Flexible cropping**<br>Use the common visible area, crop freely, or choose 4:3, 3:4, 16:9, and 9:16 presets. |
+| **Live motion preview**<br>Switch between ping-pong and loop playback, then adjust frame timing until the motion feels right. | **Smooth interpolation**<br>Optionally generate in-between frames with FFmpeg optical flow for softer movement. |
+| **Multiple export formats**<br>Create H.264 MP4, GIF, or aligned PNG, JPG, and TIFF sequences for print and lenticular workflows. | **No external dependencies**<br>Release builds include FFmpeg. Users do not need Homebrew or a separate FFmpeg installation. |
+| **English and Russian UI**<br>The interface follows the system language and can be switched at any time. | **Built-in update checks**<br>The app checks GitHub Releases and shows a link when a newer version is available. |
 
-## Build From Source
+## See it in motion
 
-Requirements:
+<!--
+GIF SLOT 1
+Replace the placeholder below with:
+<img src="docs/media/align-and-crop.gif" width="100%" alt="Aligning and cropping a wigglegram">
+-->
 
-- Node.js 20+
-- Rust stable
-- FFmpeg with H.264 support for local development (release helpers download compatible standalone builds)
-- On Windows: Microsoft C++ Build Tools with the Desktop development with C++ workload and a Windows SDK
-- On macOS: Xcode Command Line Tools
+<!--
+GIF SLOT 2
+Replace the placeholder below with:
+<img src="docs/media/preview-and-export.gif" width="100%" alt="Previewing and exporting a wigglegram">
+-->
 
-Install dependencies:
+| Align and crop | Preview and export |
+|:--:|:--:|
+| <img src="docs/images/demo-align-placeholder.svg" width="100%" alt="Alignment demo coming soon"> | <img src="docs/images/demo-export-placeholder.svg" width="100%" alt="Export demo coming soon"> |
+
+## Download and install
+
+Download the newest files from the [Releases page](https://github.com/izyazev/WiggleGramStudio/releases/latest).
+
+| Platform | Download | Requirements |
+|:--|:--|:--|
+| **Windows** | `*_x64-setup.exe` | Windows 10 or 11, x64 |
+| **macOS** | `*_aarch64.dmg` | Apple Silicon: M1, M2, M3, M4, or newer |
+
+Both packages are self-contained and include the FFmpeg binary used for export.
+
+<details>
+<summary><strong>Windows may show a SmartScreen warning</strong></summary>
+
+The installer is not yet signed with a commercial code-signing certificate. If Microsoft Defender SmartScreen appears, choose **More info → Run anyway** only after confirming that the file came from this repository.
+
+</details>
+
+<details>
+<summary><strong>macOS may block the first launch</strong></summary>
+
+The application is ad-hoc signed but not yet notarized with an Apple Developer certificate. If macOS blocks it, open **Applications**, right-click **WiggleGram Studio**, and select **Open**.
+
+</details>
+
+## Built for photographers, not subscriptions
+
+- Free and open source.
+- No account or sign-in.
+- No cloud processing.
+- No subscriptions or usage limits.
+- Source photos remain untouched.
+
+## Build from source
+
+WiggleGram Studio is built with React, TypeScript, Rust, and Tauri.
+
+<details>
+<summary><strong>Show build instructions</strong></summary>
+
+Install Node.js 20+, Rust stable, and the native build tools for your platform, then clone the repository:
 
 ```bash
 git clone https://github.com/izyazev/WiggleGramStudio.git
 cd WiggleGramStudio
-npm install
+npm ci
 ```
 
-Add FFmpeg for local development:
+Prepare the bundled FFmpeg sidecar:
 
-Windows 10/11 x64:
+```bash
+# Apple Silicon macOS
+npm run ffmpeg:download:macos
 
-```powershell
+# Windows 10/11 x64 — run in PowerShell
 npm run ffmpeg:download:windows
 ```
 
-macOS local development:
-
-```bash
-brew install ffmpeg
-npm run ffmpeg:link
-```
-
-The FFmpeg helper creates a platform-specific sidecar in `src-tauri/binaries/`. On Windows it copies `ffmpeg.exe`, avoiding symlink permissions. The generated binary is ignored by Git.
-
-For an Apple Silicon macOS release build, use the pinned standalone binary instead of Homebrew FFmpeg:
-
-```bash
-npm run ffmpeg:download:macos
-APPLE_SIGNING_IDENTITY=- npm run tauri build
-```
-
-The macOS helper verifies both the downloaded archive and extracted binary with SHA-256 before writing the Tauri sidecar. `APPLE_SIGNING_IDENTITY=-` applies an ad-hoc signature for local testing; public distribution without Gatekeeper warnings requires an Apple Developer certificate and notarization.
-
-Run the app in development mode:
-
-```bash
-npm run tauri dev
-```
-
-Run checks:
+Run the checks and build the installer:
 
 ```bash
 npm test
 npm run build
-cd src-tauri && cargo test
-```
 
-Build an installer for the current operating system:
+# Apple Silicon macOS
+APPLE_SIGNING_IDENTITY=- npm run tauri build
 
-```bash
+# Windows 10/11 x64
 npm run tauri build
 ```
 
-Build output is created in:
+The installer is written to `src-tauri/target/release/bundle/`.
 
-```text
-Windows: src-tauri/target/release/bundle/nsis/
-macOS:   src-tauri/target/release/bundle/dmg/
-```
+</details>
 
-## Creating a Release
+Issues and focused pull requests are welcome. If you find a bug, please include your operating system, application version, and the export format you were using.
 
-Keep the application version synchronized before creating a tag:
+## License
 
-```bash
-npm run version:set -- 0.2.0
-```
+WiggleGram Studio is released under the [GNU General Public License v3.0](LICENSE). Release packages include GPL FFmpeg builds from [BtbN/FFmpeg-Builds](https://github.com/BtbN/FFmpeg-Builds) on Windows and [eugeneware/ffmpeg-static](https://github.com/eugeneware/ffmpeg-static) on macOS.
 
-Commit the version change, then create and push tag `0.2.0` or `v0.2.0`. The Windows and macOS GitHub Actions workflows run the tests, build the x64 NSIS installer and Apple Silicon DMG, and attach both files to the matching GitHub Release. Manually started workflows produce downloadable build artifacts without creating a Release.
-
-## FFmpeg Distribution
-
-The app uses FFmpeg as a Tauri sidecar binary and does not rely on the user's system `PATH` at runtime.
-
-For development, `npm run ffmpeg:link` can use a locally installed FFmpeg. The Windows helper and GitHub Actions workflow use the GPL BtbN Windows build and bundle the resulting x64 binary with the application.
-
-Apple Silicon release builds use a pinned static FFmpeg 6.1.1 binary from the [eugeneware/ffmpeg-static release](https://github.com/eugeneware/ffmpeg-static/releases/tag/b6.1.1). It links only to macOS system libraries, so the distributed DMG does not depend on Homebrew or the user's `PATH`.
-
-This project is distributed under GNU General Public License v3.0. If a release DMG includes FFmpeg/x264, make sure the release also satisfies the license requirements of the bundled FFmpeg build and its codecs.
-
-Platform-specific Tauri configuration lives in `tauri.windows.conf.json` and `tauri.macos.conf.json`, so the same source tree builds an NSIS setup executable on Windows and an app/DMG on macOS.
+<div align="center">
+  <sub>Made for the distinctive motion of multi-lens film photography.</sub>
+</div>
