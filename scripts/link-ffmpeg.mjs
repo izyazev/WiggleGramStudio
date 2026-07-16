@@ -1,4 +1,4 @@
-import { existsSync, lstatSync, mkdirSync, symlinkSync, unlinkSync } from "node:fs";
+import { copyFileSync, existsSync, lstatSync, mkdirSync, symlinkSync, unlinkSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { arch, platform } from "node:os";
 import { resolve } from "node:path";
@@ -22,6 +22,15 @@ if (!source || !existsSync(source)) {
 const directory = resolve("src-tauri/binaries");
 const target = resolve(directory, `ffmpeg-${triple}`);
 mkdirSync(directory, { recursive: true });
+if (resolve(source) === target) {
+  console.log(`Development sidecar is already prepared: ${target}`);
+  process.exit(0);
+}
 if (existsSync(target) || (() => { try { return lstatSync(target).isSymbolicLink(); } catch { return false; } })()) unlinkSync(target);
-symlinkSync(resolve(source), target);
-console.log(`Development sidecar: ${target} -> ${resolve(source)}`);
+if (platform() === "win32") {
+  copyFileSync(resolve(source), target);
+  console.log(`Development sidecar: ${target} (copied from ${resolve(source)})`);
+} else {
+  symlinkSync(resolve(source), target);
+  console.log(`Development sidecar: ${target} -> ${resolve(source)}`);
+}

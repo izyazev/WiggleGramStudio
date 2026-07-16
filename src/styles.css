@@ -201,6 +201,10 @@ button:disabled { cursor: not-allowed; opacity: .42; }
 .crop-meta { min-height: 42px; border-top: 1px solid var(--line); padding: 6px 10px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 3px; color: #75808b; font-size: 8px; line-height: 1.35; }
 .crop-meta span:first-child { color: var(--lime); }
 
-footer { display: flex; justify-content: center; padding: 2px 0 4px; font-size: 9px; letter-spacing: .04em; }
+footer { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 2px 0 4px; font-size: 9px; letter-spacing: .04em; }
+footer > * + *::before { content: "·"; margin-right: 10px; color: #46515c; }
+footer .app-version { color: #596570; }
 footer a { color: #75808b; text-decoration: none; }
 footer a:hover { color: var(--lime); }
+footer .update-link { color: var(--lime); font-weight: 800; }
+footer .update-link:hover { color: #a7f5ff; }

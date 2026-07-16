@@ -1,0 +1,75 @@
+name: Windows build
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+      - "[0-9]*"
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install JavaScript dependencies
+        run: npm ci
+
+      - name: Prepare FFmpeg sidecar
+        run: npm run ffmpeg:download:windows
+
+      - name: Run tests
+        run: npm test
+
+      - name: Verify tagged version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        run: |
+          $packageVersion = (Get-Content package.json | ConvertFrom-Json).version
+          $tauriVersion = (Get-Content src-tauri/tauri.conf.json | ConvertFrom-Json).version
+          $cargoManifest = Get-Content src-tauri/Cargo.toml -Raw
+          if ($cargoManifest -notmatch '(?ms)^\[package\].*?^version = "([^"]+)"') {
+            throw "Could not read the package version from src-tauri/Cargo.toml"
+          }
+          $cargoVersion = $Matches[1]
+          $tagVersion = "${{ github.ref_name }}" -replace '^v', ''
+          $versions = @($packageVersion, $tauriVersion, $cargoVersion, $tagVersion) | Select-Object -Unique
+          if ($versions.Count -ne 1) {
+            throw "Version mismatch: package=$packageVersion, tauri=$tauriVersion, cargo=$cargoVersion, tag=$tagVersion"
+          }
+
+      - name: Build Windows installer
+        run: npm run tauri build
+
+      - name: Save Windows installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WiggleGram-Studio-Windows
+          path: src-tauri/target/release/bundle/nsis/*.exe
+          if-no-files-found: error
+
+      - name: Attach installer to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --title "WiggleGram Studio v$($tag -replace '^v', '')" --generate-notes
+          }
+          Get-ChildItem "src-tauri/target/release/bundle/nsis/*.exe" | ForEach-Object {
+            gh release upload $tag $_.FullName --clobber
+          }

@@ -2,7 +2,9 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "reac
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { cancelExport, exportVideo, loadImages, nextExportPath, openExportedFile, openGithubRepository, prepareSmoothPreview, revealExportedFile, setBackendLanguage } from "./backend";
+import { cancelExport, exportVideo, loadImages, nextExportPath, openExportedFile, openGithubReleases, openGithubRepository, prepareSmoothPreview, revealExportedFile, setBackendLanguage } from "./backend";
+import { checkForUpdate } from "./update";
+import type { UpdateInfo } from "./update";
 import { aspectRatioForPreset, commonBounds, cropToAspect, isCropInside } from "./geometry";
 import type { PhotoFrame, Point, ProjectState } from "./model";
 import { estimateGifSizeMb, estimateMp4SizeMb, gifLoopDurationSeconds, indexedExportName, initialProject, isValidDuration, maxGifSizeMb, moveItem, parseDurationInput, pictureSequenceLength, scaledOutputDimensions, sourceImageBitsPerPixel } from "./model";
@@ -76,6 +78,7 @@ export function App() {
   const [durationText, setDurationText] = useState(() => String(preferredDuration()));
   const [exportDirectory, setExportDirectory] = useState(preferredExportDirectory);
   const [viewport, setViewport] = useState(() => ({ width: window.innerWidth, height: window.innerHeight }));
+  const [updateInfo, setUpdateInfo] = useState<UpdateInfo>();
   const strings = useMemo(() => getUiStrings(language), [language]);
 
   useLayoutEffect(() => {
@@ -157,6 +160,14 @@ export function App() {
   useEffect(() => {
     if (runningInTauri) void setBackendLanguage(language).catch(() => undefined);
   }, [language]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void checkForUpdate()
+      .then((info) => { if (!cancelled) setUpdateInfo(info); })
+      .catch(() => undefined);
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     if (!exporting) setProgress((current) => ({ ...current, message: strings.app.preparingFrames }));
@@ -499,17 +510,32 @@ export function App() {
         />
       </div>
 
-      <footer><a
-        href="https://github.com/izyazev/WiggleGramStudio"
-        target="_blank"
-        rel="noreferrer"
-        title={strings.app.githubRepoTitle}
-        onClick={(event) => {
-          if (!runningInTauri) return;
-          event.preventDefault();
-          void openGithubRepository().catch((error) => setNotice({ kind: "error", text: asMessage(error) }));
-        }}
-      >izyazev/WiggleGramStudio ↗</a></footer>
+      <footer>
+        {updateInfo && <span className="app-version">v{updateInfo.currentVersion}</span>}
+        {updateInfo?.updateAvailable && <a
+          className="update-link"
+          href={updateInfo.releaseUrl}
+          target="_blank"
+          rel="noreferrer"
+          title={strings.app.updateAvailableTitle}
+          onClick={(event) => {
+            if (!runningInTauri) return;
+            event.preventDefault();
+            void openGithubReleases().catch((error) => setNotice({ kind: "error", text: asMessage(error) }));
+          }}
+        >{strings.app.updateAvailable(updateInfo.latestVersion)} ↗</a>}
+        <a
+          href="https://github.com/izyazev/WiggleGramStudio"
+          target="_blank"
+          rel="noreferrer"
+          title={strings.app.githubRepoTitle}
+          onClick={(event) => {
+            if (!runningInTauri) return;
+            event.preventDefault();
+            void openGithubRepository().catch((error) => setNotice({ kind: "error", text: asMessage(error) }));
+          }}
+        >izyazev/WiggleGramStudio ↗</a>
+      </footer>
     </main>
     </div>
   );

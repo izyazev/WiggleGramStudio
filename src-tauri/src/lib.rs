@@ -16,6 +16,7 @@ use tauri_plugin_shell::{process::CommandEvent, ShellExt};
 
 const MAX_GIF_SIZE_MB: f64 = 64.0;
 const GITHUB_REPOSITORY_URL: &str = "https://github.com/izyazev/WiggleGramStudio";
+const GITHUB_RELEASES_URL: &str = "https://github.com/izyazev/WiggleGramStudio/releases/latest";
 
 #[derive(Default)]
 struct ExportState {
@@ -1855,14 +1856,8 @@ fn launch_export_path(path: &Path, reveal: bool, language: UiLanguage) -> Result
         command.arg(format!("/select,{}", path.display()));
         command
     } else {
-        let mut command = Command::new("powershell.exe");
-        command.args([
-            "-NoProfile",
-            "-NonInteractive",
-            "-Command",
-            "Start-Process -LiteralPath $args[0]",
-            "--",
-        ]);
+        let mut command = Command::new("rundll32.exe");
+        command.arg("url.dll,FileProtocolHandler");
         command.arg(path);
         command
     };
@@ -1877,14 +1872,8 @@ fn launch_export_path(path: &Path, reveal: bool, language: UiLanguage) -> Result
 
 #[cfg(target_os = "windows")]
 fn launch_url(url: &str, language: UiLanguage) -> Result<(), String> {
-    Command::new("powershell.exe")
-        .args([
-            "-NoProfile",
-            "-NonInteractive",
-            "-Command",
-            "Start-Process $args[0]",
-            "--",
-        ])
+    Command::new("rundll32.exe")
+        .arg("url.dll,FileProtocolHandler")
         .arg(url)
         .spawn()
         .map(|_| ())
@@ -1964,6 +1953,11 @@ fn open_github_repository(language_state: State<'_, LanguageState>) -> Result<()
 }
 
 #[tauri::command]
+fn open_github_releases(language_state: State<'_, LanguageState>) -> Result<(), String> {
+    launch_url(GITHUB_RELEASES_URL, current_language(&language_state))
+}
+
+#[tauri::command]
 fn next_export_path(
     language_state: State<'_, LanguageState>,
     directory: String,
@@ -2034,6 +2028,7 @@ pub fn run() {
             open_exported_file,
             reveal_exported_file,
             open_github_repository,
+            open_github_releases,
             next_export_path
         ])
         .run(tauri::generate_context!())

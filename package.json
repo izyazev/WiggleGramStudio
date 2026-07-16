@@ -1,7 +1,7 @@
 {
   "name": "wigglegram-studio",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "tauri": "tauri",
-    "ffmpeg:link": "node scripts/link-ffmpeg.mjs"
+    "ffmpeg:link": "node scripts/link-ffmpeg.mjs",
+    "ffmpeg:download:macos": "node scripts/setup-ffmpeg-macos.mjs",
+    "ffmpeg:download:windows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/setup-ffmpeg-windows.ps1",
+    "version:set": "node scripts/set-version.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.8.0",

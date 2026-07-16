@@ -58,6 +58,10 @@ export function openGithubRepository(): Promise<void> {
   return invoke("open_github_repository");
 }
 
+export function openGithubReleases(): Promise<void> {
+  return invoke("open_github_releases");
+}
+
 export function nextExportPath(directory: string, format: ExportFormat): Promise<string> {
   return invoke("next_export_path", { directory, format });
 }

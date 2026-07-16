@@ -1,6 +1,6 @@
 [package]
 name = "wigglegram-studio"
-version = "0.1.0"
+version = "0.2.0"
 description = "Local Nishika wigglegram editor"
 authors = ["WiggleGram Studio"]
 edition = "2021"
@@ -22,4 +22,3 @@ image = { version = "0.25", default-features = false, features = ["jpeg", "png",
 kamadak-exif = "0.6"
 base64 = "0.22"
 tempfile = "3"
-
